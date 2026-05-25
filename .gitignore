@@ -1,0 +1,10 @@
+build/
+build-*/
+*.user
+*.user.*
+.cache/
+compile_commands.json
+.vscode/
+.idea/
+.claude/
+CLAUDE.md

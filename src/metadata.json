@@ -1,0 +1,16 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "yclee126@gmail.com",
+                "Name": "yclee126"
+            }
+        ],
+        "Description": "Restores a window's pre-tiling size when it is reopened, fixing the behavior of KDE Plasma 6 Wayland where an app closed while tiled saves its tiled size and reopens as a long vertical window.",
+        "EnabledByDefault": true,
+        "License": "GPL-2.0+",
+        "Name": "KWin Pretile Restore",
+        "Version": "0.1.0",
+        "Website": "https://github.com/yclee126/kwin-pretile-restore"
+    }
+}
