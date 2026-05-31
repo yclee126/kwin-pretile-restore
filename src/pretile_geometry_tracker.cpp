@@ -82,31 +82,62 @@ void PretileGeometryTracker::onWindowAdded(KWin::Window *window)
     }
 
     const QString key = window->resourceClass();
+
+    // Primary: check config for a previously armed (close-while-tiled) entry.
     KConfigGroup group = m_config->group(key);
-    if (!group.exists() || !group.readEntry(s_armedKey, false)) {
-        return;
+    if (group.exists() && group.readEntry(s_armedKey, false)) {
+        const QRect saved = group.readEntry(s_geometryKey, QRect());
+        if (saved.isValid()) {
+            const QRectF target = clampToScreen(window, QRectF(saved));
+            qCDebug(LOG_KPR) << "Restoring geometry for" << key << target << "(app opened at" << window->frameGeometry() << ")";
+
+            // The app sets its own (tiled) size right after map; apply one event-loop
+            // turn later so we win. Bound to the window as context so a destroyed
+            // window cancels the pending call.
+            QPointer<KWin::Window> guard(window);
+            QMetaObject::invokeMethod(
+                window,
+                [guard, target]() {
+                    if (guard) {
+                        guard->moveResize(KWin::RectF(target));
+                    }
+                },
+                Qt::QueuedConnection);
+            return;
+        }
     }
 
-    const QRect saved = group.readEntry(s_geometryKey, QRect());
-    if (!saved.isValid()) {
+    // Secondary: if a live sibling of the same app is currently tiled, its
+    // geometryRestore() is the authoritative floating size. Apply it when the
+    // new window opens at the same (tiled) size as the sibling, which means
+    // the app restored the wrong geometry.
+    auto *workspace = KWin::Workspace::self();
+    if (!workspace) {
         return;
     }
-
-    const QRectF target = clampToScreen(window, QRectF(saved));
-    qCDebug(LOG_KPR) << "Restoring geometry for" << key << target << "(app opened at" << window->frameGeometry() << ")";
-
-    // The app sets its own (tiled) size right after map; apply one event-loop
-    // turn later so we win. Bound to the window as context so a destroyed
-    // window cancels the pending call.
-    QPointer<KWin::Window> guard(window);
-    QMetaObject::invokeMethod(
-        window,
-        [guard, target]() {
-            if (guard) {
+    const auto allWindows = workspace->windows();
+    for (const auto *other : allWindows) {
+        if (other == window || !isManaged(other) || other->resourceClass() != key) {
+            continue;
+        }
+        if (!isTiled(other)) {
+            continue;
+        }
+        const QRectF target = clampToScreen(window, QRectF(other->geometryRestore()));
+        const QSizeF siblingTiledSize = other->frameGeometry().size();
+        qCDebug(LOG_KPR) << "Live tiled sibling found for" << key << "— will restore" << target;
+        QPointer<KWin::Window> guard(window);
+        QMetaObject::invokeMethod(
+            window,
+            [guard, siblingTiledSize, target]() {
+                if (!guard || guard->frameGeometry().size() != siblingTiledSize) {
+                    return;
+                }
                 guard->moveResize(KWin::RectF(target));
-            }
-        },
-        Qt::QueuedConnection);
+            },
+            Qt::QueuedConnection);
+        return;
+    }
 }
 
 void PretileGeometryTracker::onWindowRemoved(KWin::Window *window)
