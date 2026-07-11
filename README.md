@@ -49,6 +49,8 @@ To check your KWin version: `kwin_wayland --version`
 To install it:
 
 ```bash
+git clone https://github.com/yclee126/kwin-pretile-restore.git
+cd kwin-pretile-restore
 ./install.sh
 ```
 
