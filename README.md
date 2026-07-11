@@ -2,6 +2,8 @@
 
 A KWin plugin for KDE Plasma 6 (Wayland) that restores floating ("normal") window size after being closed in a tiled state.
 
+(Click the image below to see an animated demo)
+
 ![Demo](demo.webp)
 
 ## The problem
