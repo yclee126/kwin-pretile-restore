@@ -32,7 +32,7 @@ To check your KWin version: `kwin_wayland --version`
 ### Tested on
 
 - Kubuntu 26.04 LTS with KWin 6.6.4 / 6.6.5
-- Arch Linux with KWin 6.6.5
+- Arch Linux with KWin 6.7.2
 - Fedora 40 KDE Spin with KWin 6.0.0
 
 ### Build dependencies
