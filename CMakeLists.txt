@@ -55,6 +55,19 @@ endif()
 message(STATUS "Using KWin headers : ${KWIN_INCLUDE_DIR}")
 message(STATUS "Using KWin library : ${KWIN_LIBRARY}")
 
+# KWin 6.6 introduced its own geometry types (core/rect.h -> KWin::RectF) and
+# ported the Window API to them: frameGeometry()/geometryRestore() return
+# KWin::RectF and moveResize() takes one. KWin 6.0-6.5 use plain QRectF instead.
+# Detect which layout we're building against by the presence of the header, and
+# hand the result to the source as KWIN_HAS_RECTF so one tree builds on both.
+if(EXISTS "${KWIN_INCLUDE_DIR}/kwin/core/rect.h")
+    set(KWIN_HAS_RECTF ON)
+    message(STATUS "KWin geometry type : KWin::RectF (KWin >= 6.6)")
+else()
+    set(KWIN_HAS_RECTF OFF)
+    message(STATUS "KWin geometry type : QRectF (KWin <= 6.5)")
+endif()
+
 add_subdirectory(src)
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)

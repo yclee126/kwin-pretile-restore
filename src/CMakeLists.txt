@@ -10,6 +10,10 @@ target_include_directories(kwinpretilerestore PRIVATE
     ${KWIN_INCLUDE_DIR}/kwin
 )
 
+if(KWIN_HAS_RECTF)
+    target_compile_definitions(kwinpretilerestore PRIVATE KWIN_HAS_RECTF)
+endif()
+
 target_link_libraries(kwinpretilerestore PRIVATE
     Qt6::Core
     Qt6::DBus

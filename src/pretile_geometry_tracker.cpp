@@ -14,6 +14,22 @@ namespace
 {
 constexpr auto s_geometryKey = "Geometry";
 constexpr auto s_armedKey = "Armed";
+
+// KWin 6.6 changed Window::moveResize() to take a KWin::RectF; 6.0-6.5 take a
+// plain QRectF. KWIN_HAS_RECTF is defined by CMake when core/rect.h is present.
+// Everything else in this file already works in QRectF, so this is the only
+// spot that needs to adapt to the version-dependent argument type.
+#ifdef KWIN_HAS_RECTF
+inline KWin::RectF moveResizeArg(const QRectF &rect)
+{
+    return KWin::RectF(rect);
+}
+#else
+inline QRectF moveResizeArg(const QRectF &rect)
+{
+    return rect;
+}
+#endif
 }
 
 PretileGeometryTracker::PretileGeometryTracker()
@@ -99,7 +115,7 @@ void PretileGeometryTracker::onWindowAdded(KWin::Window *window)
                 window,
                 [guard, target]() {
                     if (guard) {
-                        guard->moveResize(KWin::RectF(target));
+                        guard->moveResize(moveResizeArg(target));
                     }
                 },
                 Qt::QueuedConnection);
@@ -133,7 +149,7 @@ void PretileGeometryTracker::onWindowAdded(KWin::Window *window)
                 if (!guard || guard->frameGeometry().size() != siblingTiledSize) {
                     return;
                 }
-                guard->moveResize(KWin::RectF(target));
+                guard->moveResize(moveResizeArg(target));
             },
             Qt::QueuedConnection);
         return;
