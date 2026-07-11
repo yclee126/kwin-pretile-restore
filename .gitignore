@@ -9,3 +9,6 @@ compile_commands.json
 .claude/
 CLAUDE.md
 rebuild.sh
+check_kwin_version.py
+.kwin_version_state
+demo_video/
