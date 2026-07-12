@@ -1,0 +1,9 @@
+[Trigger]
+Operation = Upgrade
+Type = Package
+Target = kwin
+
+[Action]
+Description = Rebuilding kwin-pretile-restore after KWin upgrade...
+When = PostTransaction
+Exec = /usr/local/lib/kwinpretilerestore/rebuild-hook.sh

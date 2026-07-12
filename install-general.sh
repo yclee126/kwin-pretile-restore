@@ -2,11 +2,11 @@
 # Build and install the KWin Pretile Restore plugin.
 #
 # Usage:
-#   ./install.sh                    # configure, build, install with sudo
-#   BUILD_DIR=out ./install.sh      # use a different build directory
-#   BUILD_TYPE=Debug ./install.sh   # change CMake build type
-#   JOBS=8 ./install.sh             # override parallel build jobs
-#   CMAKE_INSTALL_PREFIX=/usr/local ./install.sh
+#   ./install-general.sh                    # configure, build, install with sudo
+#   BUILD_DIR=out ./install-general.sh      # use a different build directory
+#   BUILD_TYPE=Debug ./install-general.sh   # change CMake build type
+#   JOBS=8 ./install-general.sh             # override parallel build jobs
+#   CMAKE_INSTALL_PREFIX=/usr/local ./install-general.sh
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -56,5 +56,5 @@ Installed.
 KWin only loads plugins at start-up, so to pick up the new plugin you need
 to log out and log back in.
 
-To remove the plugin later, run ./uninstall.sh from this directory.
+To remove the plugin later, run ./uninstall-general.sh from this directory.
 EOF

@@ -6,8 +6,8 @@
 # the well-known KWin plugin directories for kwinpretilerestore.so.
 #
 # Usage:
-#   ./uninstall.sh
-#   BUILD_DIR=out ./uninstall.sh    # if you used a non-default BUILD_DIR
+#   ./uninstall-general.sh
+#   BUILD_DIR=out ./uninstall-general.sh    # if you used a non-default BUILD_DIR
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

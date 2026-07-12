@@ -31,7 +31,7 @@ To check your KWin version: `kwin_wayland --version`
 
 - Kubuntu 26.04 LTS with KWin 6.6.4 / 6.6.5
 - Arch Linux with KWin 6.7.2
-- Fedora 40 KDE Spin with KWin 6.0.0
+- Fedora 40 KDE Spin with KWin 6.0.0 (no automated reinstall script)
 
 ### Build dependencies
 
@@ -44,23 +44,31 @@ To check your KWin version: `kwin_wayland --version`
 
 ### Installation scripts
 
-To install it:
+KWin rejects plugins not compiled for its version number, which means every KWin upgrade will break this plugin. For convenience, these distro-specific scripts automatically re-install this plugin for you after each KWin upgrade.
+
+Clone this repository to a **permanent location** so the auto scripts work correctly.
 
 ```bash
 git clone https://github.com/yclee126/kwin-pretile-restore.git
 cd kwin-pretile-restore
-./install.sh
 ```
+
+And pick an installation script matching your distro. Note that only Debian and Arch Linux hooks are available at the moment.
+
+| Distribution | Command | Auto-rebuild |
+|---|---|---|
+| **Arch Linux (CachyOS)** | `./install-arch.sh` | Yes (pacman hook) |
+| **Debian (Ubuntu)** | `./install-debian.sh` | Yes (APT hook) |
+| **Others** | `./install-general.sh` | No (need to manually re-install) |
 
 After it completes, log out and back in. (KWin only loads plugins at startup)
 
-Note that you'll have to run this install script after each KWin upgrade since KWin rejects any plugins not matching its version number.
+To remove it, run the counterpart `uninstall` script.
 
-To remove it:
+### How the automatic scripts work
 
-```bash
-./uninstall.sh
-```
+- **Arch** — A pacman hook (`/etc/pacman.d/hooks/`) triggered on upgrades of the `kwin` package.
+- **Debian** — An APT `DPkg::Post-Invoke` snippet (`/etc/apt/apt.conf.d/`). It runs after every apt transaction, but only rebuilds when the running KWin version differs from the one last built against, which is saved to `/etc/kwinpretilerestore/built_version`.
 
 ## Debugging
 
