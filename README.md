@@ -10,13 +10,13 @@ If you reopen an app you tiled last time, the new window often retains the tiled
 
 ## How it works
 
-This plugin watches windows being closed and opened and manually restores the size from its own saved list.
+This plugin watches each app's windows being closed and opened and manually restores the size from its own saved list.
 
 - **On close:** If the window was tiled, its floating geometry is saved and marked for restore. If it was not tiled, the mark is cleared.
 - **On open (primary):** If it was marked for restore, the new window is resized back to the saved geometry right after it opens.
-- **On open (secondary):** Some programs even save their window size while it's running, so it checks if any opened window has a tiled state. If it finds the new window's geometry is the same as the tiled one, it restores the saved geometry even if it's not marked.
+- **On open (secondary):** Some programs even save their window size while it's running, so this plugin has a second mechanism for that. If it finds a new window's geometry is the same as the tiled one, it restores the saved geometry even if it was not marked for restore.
 
-The list is at `~/.config/kwinpretilerestorerc`, one entry per app.
+The list is at `~/.config/kwinpretilerestorerc`, one entry per app. (keyed by the app's window class)
 
 ## Build & install
 
